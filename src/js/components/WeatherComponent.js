@@ -836,12 +836,16 @@ window.weather = () => {
             }
             // // The Moon Phases are well known and a fixed set, so no fallback required
             // Phases are listed here: https://www.npmjs.com/package/lunarphase-js#usage
-            this.moonPhase = Moon.lunarPhase(now, {hemisphere: Hemisphere.SOUTHERN});
-            this.moonPhaseEmoji = Moon.lunarPhaseEmoji(now, {hemisphere: Hemisphere.SOUTHERN});
+            let hemisphere = Hemisphere.SOUTHERN;
+            if (Alpine.store('config').moon.toLowerCase() ==='n'){
+                hemisphere = Hemisphere.NORTHERN;
+            }
+            this.moonPhase = Moon.lunarPhase(now, {hemisphere: hemisphere});
+            this.moonPhaseEmoji = Moon.lunarPhaseEmoji(now, {hemisphere: hemisphere});
             this.isWaxing = Moon.isWaxing(now);
             this.isWaning = Moon.isWaning(now);
             this.moonPhaseIcon = Alpine.store('config').svgAnimatedPath  + mapMoonPhaseToWeatherIcon[this.moonPhase];
-            log.info(`Current moon is ${this.moonPhase} ${this.moonPhaseEmoji}, icon: ${this.moonPhaseIcon}`);
+            log.info(`Current moon (${hemisphere}) is ${this.moonPhase} ${this.moonPhaseEmoji}, icon: ${this.moonPhaseIcon}, isWaxing: ${this.isWaxing}, isWaning: ${this.isWaning}`);
             this.showMoon = true;
         },
 

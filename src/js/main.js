@@ -23,6 +23,7 @@ Alpine.store('config', {
         this.latitude = urlParams.get('latitude') || false;
         this.longitude = urlParams.get('longitude') || false;
         this.timezone = urlParams.get('timezone') || false;
+        this.moon = urlParams.get('moon') || 'S';
         // Fall back to BOM weather for Ascot Vale, Victoria, Australia - if no weather location info provided
         if (!this.bom && !this.latitude) {
             this.bom = 'r1r11df';
@@ -126,6 +127,7 @@ Alpine.store('config', {
     latitude: false,
     longitude: false,
     timezone: false,
+    moon: false,
     size: false,
     textSoloClock: null,
     textSoloClockSeconds: null,
