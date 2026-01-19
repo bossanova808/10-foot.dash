@@ -135,7 +135,13 @@ E.g. `size=small`
 
 ## Configure: Weather Data
 
-### Weather from OpenMeteo (Worldwide :earth_americas:)
+### Moon Phase
+
+Northern or Southern Hemisphere for moon phase.  Default is `S` for southern.  Use `N` for northern.
+
+E.g.  `moon=N`
+
+### Weather Data from OpenMeteo (Worldwide :earth_americas:)
 
 If you're *not* in Australia (see below for that) - then you should provide the necessary OpenMeteo data - you need latitude, longitude and timezone.  
 
@@ -148,7 +154,7 @@ Build your URL arguments from those values, e.g.:
 
 `latitude=-37.814&longitude=144.9633&timezone=Australia%2FSydney`
 
-### Weather from the Australian Bureau of Meteorology (:australia:)
+### Weather Data from the Australian Bureau of Meteorology (:australia:)
 
 If you *are* in Australia, then definitely use this approach - the BOM weather data is much more accurate, and it's also easier to set up.
 
