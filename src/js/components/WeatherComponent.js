@@ -446,6 +446,7 @@ window.weather = () => {
                     Alpine.store('isAvailable').weather = false;
                     return;
                 }
+                
             }
             // Not using Australian BOM data? Use OpenMeteo for weather data instead
             else {
@@ -848,6 +849,21 @@ window.weather = () => {
             log.info(`Current moon (${hemisphere}) is ${this.moonPhase} ${this.moonPhaseEmoji}, icon: ${this.moonPhaseIcon}, isWaxing: ${this.isWaxing}, isWaning: ${this.isWaning}`);
             this.showMoon = true;
         },
+
+        // CORS errors with this one...
+        // async testRadarURL(){
+        //     let radarUrl = `https://api.weather.bom.gov.au/v1/radar/capabilities`
+        //     return await fetch(radarUrl, {
+        //         method: 'GET',
+        //         headers: {
+        //             'Accept': 'application/json',
+        //         },
+        //     })
+        //        .then(response => response.json())
+        //         .then(json => {
+        //             log.info(JSON.stringify(json));
+        //         })
+        // },
 
     }
 };
