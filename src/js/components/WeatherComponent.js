@@ -446,7 +446,7 @@ window.weather = () => {
                     Alpine.store('isAvailable').weather = false;
                     return;
                 }
-                
+
             }
             // Not using Australian BOM data? Use OpenMeteo for weather data instead
             else {
