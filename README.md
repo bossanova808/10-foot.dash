@@ -1,6 +1,8 @@
-#
+[![Tool for Kodi](https://img.shields.io/badge/Tool%20for-Kodi-blue?logo=kodi)](https://forum.kodi.tv/showthread.php?tid=375174)
+[![Tool for Jellyfin](https://img.shields.io/badge/jellyfin-%23000B25.svg?style=for-the-badge&logo=Jellyfin&logoColor=00A4DC)]
+[![License](https://img.shields.io/badge/License-GPLv3-orange)](https://github.com/bossanova808/10-foot.dash/blob/master/LICENSE.txt)
+![Total downloads](https://img.shields.io/github/downloads/bossanova808/10-foot.dash/total.svg)
 
-ARCHIVED - this projects has moved to: https://github.com/bossanova808/10-foot.dash
 
 
 # 10-Foot Dash :tv:
