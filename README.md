@@ -2,6 +2,8 @@
 ![Tool for Jellyfin](https://img.shields.io/badge/jellyfin-%23000B25.svg?logo=Jellyfin)
 [![License](https://img.shields.io/badge/License-GPLv3-orange)](https://github.com/bossanova808/10-foot.dash/blob/master/LICENSE.txt)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000)](#)
+[![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?logo=alpinedotjs&logoColor=fff)](#)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff)](#)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?logo=tailwind-css&logoColor=white)](#)
 
 
@@ -87,7 +89,7 @@ This project uses, and sends thanks to, these particular giants:
 * [Vite](https://vitejs.dev/) for dev/building/packaging
 * [Alpine.js](https://alpinejs.dev/) for reactivity
 * [Tailwind CSS](https://tailwindcss.com/) for CSS
-* [CodeRabbit](https://www.coderabbit.ai/)) - for development assistance
+* [CodeRabbit](https://www.coderabbit.ai/) - for development assistance
 * (Either) [OpenMeteo](https://open-meteo.com/) for weather data
 * (Or) [Australian Bureau of Meteorology](http://www.bom.gov.au/) for weather data
 * [ARPANSA](https://www.arpansa.gov.au/) for live UV data (some Australian locations)
