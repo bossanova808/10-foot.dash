@@ -2,12 +2,19 @@
 import legacy from '@vitejs/plugin-legacy'
 import {VitePWA} from 'vite-plugin-pwa'
 import tailwindcss from "@tailwindcss/vite";
+import { resolve } from 'node:path';
 
 export default {
     // base: '/deploy.kodidash',
     build: {
         manifest: true,
-        minify: 'terser', // Slower, but trying for older iOS support - https://github.com/vitejs/vite/issues/6506
+        minify: 'terser', // Slower, but trying for older iOS support - https://github.com/vitejs/vite/issues/6506,
+        rollupOptions: {
+            input: {
+                main: resolve(__dirname, 'index.html'),
+                logo: resolve(__dirname, 'logo.html'),
+            },
+        },
     },
     plugins: [
         tailwindcss(),

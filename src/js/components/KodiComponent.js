@@ -92,7 +92,7 @@ window.kodi = () => {
                 return '';
             }
 
-            return `${seasonNumber}x${episodeNumber}`;
+            return `S${seasonNumber}•E${episodeNumber}`;
         },
 
         getFormattedSeason() {
@@ -105,16 +105,6 @@ window.kodi = () => {
             return Number.isFinite(episodeNumber) && episodeNumber > 0 ? String(episodeNumber) : '';
         },
 
-        getFormattedTemperature() {
-            const temperature = Number.parseFloat(this.temperature);
-            return Number.isFinite(temperature) ? temperature.toFixed(1) : '';
-        },
-
-        getFormattedFeelsLike() {
-            const feelsLike = Number.parseFloat(this.feelsLike);
-            return Number.isFinite(feelsLike) ? feelsLike.toFixed(1) : '';
-        },
-
         getFormattedPremiered() {
             if (!this.premiered) {
                 return '';
@@ -125,8 +115,8 @@ window.kodi = () => {
                 return '';
             }
 
-            const [year] = parts;
-            return year;
+            const [year, month] = parts;
+            return `${Number(month)}/${year}`;
         },
 
         createEnhancedKodiWebSocket() {

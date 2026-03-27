@@ -142,7 +142,7 @@ window.jellyfin = () => {
                 return '';
             }
 
-            return `${seasonNumber}x${episodeNumber}`;
+            return `S${seasonNumber}•E${episodeNumber}`;
         },
 
         getFormattedSeason() {
@@ -165,8 +165,8 @@ window.jellyfin = () => {
                 return '';
             }
 
-            const [year] = parts;
-            return year;
+            const [year, month] = parts;
+            return `${Number(month)}/${year}`;
         },
 
         sessionPolling(pollRate = POLL_RATE_IDLE) {

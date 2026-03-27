@@ -530,10 +530,10 @@ window.weather = () => {
                     this.observations = json;
                     // Use this to keep track of when we last got observations, in case of network drop etc.
                     this.observationsFetchedAt =  new Date(this.observations.metadata.response_timestamp);
-                    this.currentTemperature = this.observations.data.temp + '°';
+                    this.currentTemperature = Number(this.observations.data.temp).toFixed(1) + '°';
                     if (this.observations.data.temp_feels_like != null) {
-                        this.currentFeelsLike = this.observations.data.temp_feels_like + '°';
-                }
+                        this.currentFeelsLike = Number(this.observations.data.temp_feels_like).toFixed(1) + '°';
+                    }
                     else {
                         this.currentFeelsLike = "";
                     }
