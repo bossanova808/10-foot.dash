@@ -572,7 +572,7 @@ window.weather = () => {
                     // What is the general outlook?
                     this.outlook = todayForecast.short_text;
                     // Remove full stop on end
-                    this.outlook = this.outlook.replace(/\.$/, '')
+                    //this.outlook = this.outlook.replace(/\.$/, '')
 
                     // Save the icon - we convert the short text and use that to get the icon, if we can
                     // as sometimes the BOM will return an outlook of 'Sunny' but an icon of 'shower' if there is even

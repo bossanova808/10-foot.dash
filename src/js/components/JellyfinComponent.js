@@ -122,6 +122,7 @@ window.jellyfin = () => {
         episode: '',
         finishTime: '',
         timeRemainingAsTime: '',
+        premiered: '',
 
         _initDelay: null,
         _currentMediaType: null,
@@ -132,6 +133,41 @@ window.jellyfin = () => {
         _currentPollRate: POLL_RATE_IDLE,
         _lastProgressUpdate: Date.now(),
         _pausedInactivityThreshold: null,
+
+        getFormattedSeasonAndEpisode() {
+            const seasonNumber = Number.parseInt(this.season, 10);
+            const episodeNumber = Number.parseInt(this.episode, 10);
+
+            if (!Number.isFinite(seasonNumber) || !Number.isFinite(episodeNumber) || seasonNumber <= 0 || episodeNumber <= 0) {
+                return '';
+            }
+
+            return `${seasonNumber}x${episodeNumber}`;
+        },
+
+        getFormattedSeason() {
+            const seasonNumber = Number.parseInt(this.season, 10);
+            return Number.isFinite(seasonNumber) && seasonNumber > 0 ? String(seasonNumber) : '';
+        },
+
+        getFormattedEpisode() {
+            const episodeNumber = Number.parseInt(this.episode, 10);
+            return Number.isFinite(episodeNumber) && episodeNumber > 0 ? String(episodeNumber) : '';
+        },
+
+        getFormattedPremiered() {
+            if (!this.premiered) {
+                return '';
+            }
+
+            const parts = String(this.premiered).slice(0, 10).split('-');
+            if (parts.length !== 3) {
+                return '';
+            }
+
+            const [year] = parts;
+            return year;
+        },
 
         sessionPolling(pollRate = POLL_RATE_IDLE) {
 
@@ -301,9 +337,11 @@ window.jellyfin = () => {
                 this.season = item.ParentIndexNumber || '';
                 this.episode = item.IndexNumber || '';
                 this.title = item.SeriesName || this.title;
+                this.premiered = item.PremiereDate || '';
             } else {
                 this.season = '';
                 this.episode = '';
+                this.premiered = item.PremiereDate || '';
             }
 
             // Show the component
@@ -364,6 +402,7 @@ window.jellyfin = () => {
             this.episode = '';
             this.finishTime = '';
             this.timeRemainingAsTime = '';
+            this.premiered = '';
             this._currentItemId = null;
             this._currentSessionId = null;
             this._currentMediaType = null;
