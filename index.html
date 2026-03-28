@@ -134,7 +134,7 @@
                         <div class="z-50 absolute bottom-0 right-0 mr-3 text-right leading-none">
                             <div x-show="getFormattedSeasonAndEpisode() || getFormattedPremiered()"
                                  :class="$store.config.textSmall"
-                                 class="font-bold bg-clip-text text-transparent bg-linear-to-r from-cyan-300 to-green-300 font-mono whitespace-nowrap">
+                                 class="font-bold bg-clip-text text-transparent pb-2 bg-linear-to-r from-cyan-300 to-green-300 font-mono whitespace-nowrap">
                                 <template x-if="getFormattedSeasonAndEpisode()">
                                     <div>
                                         <span x-text="'S' + getFormattedSeason()"></span><span class="text-blue-200">•</span><span x-text="'E' + getFormattedEpisode()"></span>
