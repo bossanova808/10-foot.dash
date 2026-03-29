@@ -87,20 +87,22 @@
                                 </div>
                             </div>
 
-                            <!-- Moon Phase - Open Meteo or BOM & nighttime -->
-                            <div x-show="$store.config.size!=='small' && showMoon" class="relative">
-                                <img class="" style="margin-bottom: -30px; margin-left: -10px" :src="moonPhaseIcon" :alt="moonPhase" :height="$store.config.moonIconSize" :width="$store.config.moonIconSize"/>
+                            <!-- Moon Phase - Open Meteo or BOM & nighttime (x-cloak here hides the arrows on load) -->
+
+                            <div x-cloak x-show="$store.config.size!=='small' && showMoon" class="flex items-end gap-0.5" style="padding-bottom: 20px;">
+                                <img class="inline-block align-bottom" :src="moonPhaseIcon" :alt="moonPhase" :height="$store.config.moonIconSize" :width="$store.config.moonIconSize"/>
 
                                 <!-- Waxing indicator -->
-                                <div x-show="isWaxing" class="absolute bottom-1 left-[60%]" :style="`width: ${$store.config.moonIconSize / 2}px; height: ${$store.config.moonIconSize / 2}px;`">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-full h-full fill-blue-300"><path d="M7 14l5-5 5 5z"/></svg>
+                                <div x-show="isWaxing" class="inline-flex items-end" :style="`width: ${$store.config.moonIconSize / 3}px; height: ${$store.config.moonIconSize / 3}px;`">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full fill-blue-300" viewBox="7 9 10 5"><path d="M7 14l5-5 5 5z"></path></svg>
                                 </div>
 
                                 <!-- Waning indicator -->
-                                <div x-show="isWaning" class="absolute bottom-2 left-[60%]"  :style="`width: ${$store.config.moonIconSize / 2}px; height: ${$store.config.moonIconSize / 2}px;`">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-full h-full fill-blue-300"><path d="M7 10l5 5 5-5z"/></svg>
+                                <div x-show="isWaxing" class="inline-flex items-end" :style="`width: ${$store.config.moonIconSize / 3}px; height: ${$store.config.moonIconSize / 3}px;`">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full fill-blue-300" viewBox="7 10 10 5"><path d="M7 10l5 5 5-5z"></path></svg>
                                 </div>
                             </div>
+
 
                         </div>
 

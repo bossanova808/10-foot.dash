@@ -88,7 +88,7 @@ window.kodi = () => {
             const seasonNumber = Number.parseInt(this.season, 10);
             const episodeNumber = Number.parseInt(this.episode, 10);
 
-            if (!Number.isFinite(seasonNumber) || !Number.isFinite(episodeNumber) || seasonNumber <= 0 || episodeNumber <= 0) {
+            if (!Number.isFinite(seasonNumber) || !Number.isFinite(episodeNumber) || seasonNumber < 0 || episodeNumber < 0) {
                 return '';
             }
 
@@ -97,12 +97,12 @@ window.kodi = () => {
 
         getFormattedSeason() {
             const seasonNumber = Number.parseInt(this.season, 10);
-            return Number.isFinite(seasonNumber) && seasonNumber > 0 ? String(seasonNumber) : '';
+            return Number.isFinite(seasonNumber) && seasonNumber >= 0 ? String(seasonNumber) : '';
         },
 
         getFormattedEpisode() {
             const episodeNumber = Number.parseInt(this.episode, 10);
-            return Number.isFinite(episodeNumber) && episodeNumber > 0 ? String(episodeNumber) : '';
+            return Number.isFinite(episodeNumber) && episodeNumber >= 0 ? String(episodeNumber) : '';
         },
 
         getFormattedPremiered() {
