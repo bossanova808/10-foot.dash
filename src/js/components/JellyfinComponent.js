@@ -117,6 +117,7 @@ window.jellyfin = () => {
 
     return {
         artwork: null,
+        artworks: [],
         title: '',
         season: '',
         episode: '',
@@ -133,6 +134,11 @@ window.jellyfin = () => {
         _currentPollRate: POLL_RATE_IDLE,
         _lastProgressUpdate: Date.now(),
         _pausedInactivityThreshold: null,
+
+        getArtwork(key) {
+            const found = this.artworks.find((a) => a.key === key);
+            return found?.url || null;
+        },
 
         getFormattedSeasonAndEpisode() {
             const seasonNumber = Number.parseInt(this.season, 10);
@@ -289,11 +295,42 @@ window.jellyfin = () => {
                     // Get artwork with fallback - only when item changes
                     if (item.Id && item.Id !== this._currentItemId) {
                         log.info(`New item detected (${item.Id}), fetching artwork`);
-                        const fallbackUrls = buildArtworkFallbackUrls(
-                            item,
-                            Alpine.store('config').jellyfinUrl
-                        );
-                        log.info(`Attempting artwork URLs for ${item.Type}:${fallbackUrls}`);
+                        const protocols = getJellyfinProtocols();
+                        const normalizedUrl = Alpine.store('config').jellyfinUrl.replace(/\/$/, '');
+                        const baseImageUrl = `${protocols.http}${normalizedUrl}/Items`;
+                        const apiKey = Alpine.store('config').jellyfinApiKey;
+                        const authHeader = { 'Authorization': `MediaBrowser Token="${apiKey}"` };
+
+                        // Build named artworks matching the keys the template uses via getArtwork()
+                        const candidateArtworks = [];
+                        if (item.Type === 'Episode') {
+                            candidateArtworks.push({ key: 'tvshow.clearlogo', url: `${baseImageUrl}/${item.SeriesId}/Images/Logo` });
+                            candidateArtworks.push({ key: 'poster',           url: `${baseImageUrl}/${item.SeriesId}/Images/Primary` });
+                        } else {
+                            candidateArtworks.push({ key: 'clearlogo', url: `${baseImageUrl}/${item.Id}/Images/Logo` });
+                            candidateArtworks.push({ key: 'poster',    url: `${baseImageUrl}/${item.Id}/Images/Primary` });
+                        }
+
+                        // Validate each URL and keep only the ones that exist
+                        this.artworks = [];
+                        for (const candidate of candidateArtworks) {
+                            try {
+                                const controller = new AbortController();
+                                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                                const resp = await fetch(candidate.url, { method: 'HEAD', signal: controller.signal, headers: authHeader });
+                                clearTimeout(timeoutId);
+                                if (resp.ok) {
+                                    log.info(`Artwork validated: ${candidate.key} -> ${candidate.url}`);
+                                    this.artworks.push(candidate);
+                                }
+                            } catch (_) {
+                                log.info(`Artwork not available: ${candidate.key}`);
+                            }
+                        }
+
+                        // Also resolve the single fallback artwork used by the old <img :src="artwork"> binding
+                        const fallbackUrls = buildArtworkFallbackUrls(item, Alpine.store('config').jellyfinUrl);
+                        log.info(`Attempting fallback artwork URLs for ${item.Type}: ${fallbackUrls}`);
                         this.artwork = await getValidArtworkUrl(fallbackUrls);
                         log.info(`Artwork URL set to ${this.artwork}`);
                     }
@@ -397,6 +434,7 @@ window.jellyfin = () => {
 
         _clearProperties() {
             this.artwork = null;
+            this.artworks = [];
             this.title = '';
             this.season = '';
             this.episode = '';
