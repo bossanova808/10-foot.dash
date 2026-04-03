@@ -38,13 +38,13 @@
 
                 <div x-show="$store.isAvailable.weather === true" x-transition.duration.500ms>
 
-                    <div class="z-50 absolute bottom-0 left-0 mb-4 ml-5 text-left">
-                        <div x-show="$store.config.size!=='small' && currentFeelsLike !== '' && currentFeelsLike !== null && currentFeelsLike !== undefined"
+                    <div class="z-50 absolute bottom-0 left-0 mb-2 ml-4 text-left">
+                        <div x-show="currentFeelsLike !== '' && currentFeelsLike !== null && currentFeelsLike !== undefined"
                               :class="$store.config.textSmall"
                               class="font-bold text-blue-200 font-mono whitespace-nowrap">
                             <svg class="inline-block align-middle mt-2 h-[0.6em] w-[0.6em] pb-1 mr-[0.1em] fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M750-614q-27 27-62 41t-70 14q-35 0-69-13.5T488-614l-75-75q-15-15-34-22.5t-39-7.5q-20 0-39 7.5T267-689l-75 75-57-57 75-75q27-27 61-40.5t69-13.5q35 0 68.5 13.5T469-746l75 75q16 16 35 23.5t39 7.5q20 0 39.5-7.5T693-671l75-75 57 57-75 75Zm0 200q-27 27-61.5 40.5T619-360q-35 0-69.5-13.5T488-414l-75-75q-15-15-34-22.5t-39-7.5q-20 0-39 7.5T267-489l-75 75-57-56 75-76q27-27 61-40.5t69-13.5q35 0 68.5 13.5T469-546l75 75q16 16 35 23.5t39 7.5q20 0 39.5-7.5T693-471l75-75 57 57-75 75Zm-1 200q-27 27-61 40.5T619-160q-35 0-69.5-13.5T488-214l-76-75q-15-15-34-22.5t-39-7.5q-20 0-39 7.5T266-289l-75 75-56-56 75-76q27-27 61-40.5t69-13.5q35 0 68.5 13.5T469-346l75 75q16 16 35.5 23.5T619-240q20 0 39-7.5t35-23.5l75-75 56 57-75 75Z"/></svg><span x-text="currentFeelsLike" class="inline-block align-middle"></span>
                         </div>
-                        <div x-show="currentTemperature !== '' && currentTemperature !== null && currentTemperature !== undefined" :class="$store.config.textMedium" class="ml-3 font-bold text-amber-200 font-mono whitespace-nowrap" style="margin-right: -10px;" x-text="currentTemperature"></div>
+                        <div x-show="currentTemperature !== '' && currentTemperature !== null && currentTemperature !== undefined" :class="$store.config.textMedium" class="font-bold text-amber-200 font-mono whitespace-nowrap" style="margin-right: -10px;" x-text="currentTemperature"></div>
                         <div :class="$store.config.textLarge" class="font-bold bg-clip-text text-transparent bg-linear-to-r from-cyan-300 to-green-300 font-mono whitespace-nowrap" x-text="getTime()"></div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 <div x-show="$store.isAvailable.weather === true && $store.isAvailable.kodi === false && $store.isAvailable.jellyfin === false" x-transition.duration.500ms>
 
                     <!-- Key Weather Information -->
-                    <div class="absolute top-0 left-0 mt-3 ml-4 flex gap-6" >
+                    <div class="absolute top-0 left-0 mt-3 ml-1 flex gap-6" >
 
                         <!-- Forthcoming High / Low  -->
                         <div>
@@ -106,7 +106,7 @@
 
                             <!-- Rain since 9am -->
                             <div x-show="showRainSince9am" :class="$store.config.textSmall" class="font-semibold text-blue-200 whitespace-nowrap">
-                                <span x-text="`${rainSince9am}mm`"></span><svg class='inline-block align-middle h-[1.2em] w-[1.2em] pb-2 pl-4 fill-current' style='stroke: currentColor; stroke-width: 0.5;' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M28,4a2.0023,2.0023,0,0,0-2,2V8H24a3.4376,3.4376,0,0,1-3.0513-2.3164A1.007,1.007,0,0,0,20,5a.9894.9894,0,0,0-.9468.6787A3.44,3.44,0,0,1,16,8a3.4376,3.4376,0,0,1-3.0513-2.3164A1.007,1.007,0,0,0,12,5a.971.971,0,0,0-.9468.6787A3.44,3.44,0,0,1,8,8H6V6A2.0023,2.0023,0,0,0,4,4H2V6H4V26a2.0023,2.0023,0,0,0,2,2H26a2.0023,2.0023,0,0,0,2-2V6h2V4ZM6,26V22h4V20H6V16h4V14H6V10H8a4.9316,4.9316,0,0,0,4-1.9873,5.0192,5.0192,0,0,0,8,0A4.9316,4.9316,0,0,0,24,10h2V26Z'/></svg>
+                                <span x-text="`${rainSince9am}mm`"></span><svg class='inline-block align-middle h-[1.1em] w-[1.1em] pb-2 pl-4 fill-current' style='stroke: currentColor; stroke-width: 0.5;' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M28,4a2.0023,2.0023,0,0,0-2,2V8H24a3.4376,3.4376,0,0,1-3.0513-2.3164A1.007,1.007,0,0,0,20,5a.9894.9894,0,0,0-.9468.6787A3.44,3.44,0,0,1,16,8a3.4376,3.4376,0,0,1-3.0513-2.3164A1.007,1.007,0,0,0,12,5a.971.971,0,0,0-.9468.6787A3.44,3.44,0,0,1,8,8H6V6A2.0023,2.0023,0,0,0,4,4H2V6H4V26a2.0023,2.0023,0,0,0,2,2H26a2.0023,2.0023,0,0,0,2-2V6h2V4ZM6,26V22h4V20H6V16h4V14H6V10H8a4.9316,4.9316,0,0,0,4-1.9873,5.0192,5.0192,0,0,0,8,0A4.9316,4.9316,0,0,0,24,10h2V26Z'/></svg>
                             </div>
                         </div>
                     </div>
@@ -136,14 +136,14 @@
                     </div>
 
                     <!-- Bottom right: Season/Episode 1x6, end time, remaining time -->
-                    <div class="z-50 absolute bottom-0 right-0 mr-5 mb-5 text-right">
+                    <div class="z-50 absolute bottom-0 right-0 mr-5 mb-2 text-right">
 
                         <div x-show="getFormattedSeasonAndEpisode() || getFormattedPremiered()"
                              :class="$store.config.textSmall"
-                             class="font-bold bg-clip-text text-transparent bg-linear-to-r from-cyan-300 to-green-300 font-mono whitespace-nowrap">
+                             class="font-bold text-blue-200 font-mono whitespace-nowrap">
                             <template x-if="getFormattedSeasonAndEpisode()">
                                 <div>
-                                    <span x-text="'S' + getFormattedSeason()"></span><span class="text-blue-200">•</span><span x-text="'E' + getFormattedEpisode()"></span>
+                                    <span x-text="'S' + getFormattedSeason()"></span><span class="text-blue-300">•</span><span x-text="'E' + getFormattedEpisode()"></span>
                                 </div>
                             </template>
                             <template x-if="!getFormattedSeasonAndEpisode() && getFormattedPremiered()">

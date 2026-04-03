@@ -117,7 +117,17 @@ This is the basic URL to visit:
 
 `https://dash.bossanova808.net/`
 
-Initially, you will simply see a large clock in the center of your screen.  This is the default display if the app is not configured, or the network is down.
+Initially, you will simply see a large clock in the centre of your screen.  This is the default display if the app is not configured, or the network is down.
+
+### * New! * Experimental 'logo' layout available in V4
+
+There is a new experimental layout available with V4 - the weather info is re-arranged and the media now plaing display uses logos, rather than posters (when logos are available).  (N.B. Currently it has only been tested on tablets, using the default `large` size).
+
+You can try it out with: 
+
+`https://dash.bossanova808.net/logo.html` (...adding any parameters on the end as usual, see below).
+
+## Configuring the App
 
 Now, you need to provide some configuration.  All configuration is done via URL parameters.  These follow the URL and an initial `?` character, and take the form of: `parameter=value`, with each separated by `&`, given a URL that looks like this:
 
