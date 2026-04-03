@@ -121,7 +121,7 @@ Initially, you will simply see a large clock in the centre of your screen.  This
 
 ### * New! * Experimental 'logo' layout available in V4
 
-There is a new experimental layout available with V4 - the weather info is re-arranged and the media now plaing display uses logos, rather than posters (when logos are available).  (N.B. Currently it has only been tested on tablets, using the default `large` size).
+There is a new experimental layout available with V4 – the weather info is re-arranged, and the media now playing display uses logos, rather than posters (when logos are available).  (N.B. Currently it has only been tested on tablets, using the default `large` size).
 
 You can try it out with: 
 
