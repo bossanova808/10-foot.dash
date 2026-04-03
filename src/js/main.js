@@ -101,7 +101,7 @@ Alpine.store('config', {
             this.textSmall = 'text-6xl';
             this.textSmaller = 'text-5xl';
             this.weatherIconSize = 325;
-            this.moonIconSize = 100;
+            this.moonIconSize = 110;
             this.kodiArtworkScale = "max-w-lg"
         }
 

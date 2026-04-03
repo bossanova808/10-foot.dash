@@ -7,7 +7,7 @@
     <link rel="icon" href="/images/foot.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <title>10-Foot Dash v3.0.0</title>
+    <title>10-Foot Dash v4.0.0</title>
     <!-- Imports Tailwind & let Vite know about it -->
     <link rel="stylesheet" href="src/css/style.css">
 </head>
@@ -41,7 +41,7 @@
 
                         <div class="z-50 absolute top-0 right-0 mr-3 text-right leading-none">
                             <div :class="$store.config.textLarge" class="mb-5 font-bold bg-clip-text text-transparent bg-linear-to-r from-cyan-300 to-green-300 font-mono whitespace-nowrap" x-text="getTime()"></div>
-                            <div x-show="currentTemperature !== '' && currentTemperature !== null && currentTemperature !== undefined" :class="$store.config.textMedium" class="pb-1 ml-3 font-bold text-amber-200 font-mono whitespace-nowrap" style="margin-right: -10px;" x-text="currentTemperature"></div>
+                            <div x-show="currentTemperature !== '' && currentTemperature !== null && currentTemperature !== undefined" :class="$store.config.textMedium" class="pb-1 font-bold text-amber-200 font-mono whitespace-nowrap" x-text="currentTemperature"></div>
                             <div x-cloak x-show="$store.config.size!=='small' && currentFeelsLike !== '' && currentFeelsLike !== null && currentFeelsLike !== undefined"
                                   :class="$store.config.textSmall"
                                   class="font-bold text-blue-200 font-mono whitespace-nowrap">
@@ -62,7 +62,7 @@
                         </div>
 
                         <!-- BOTTOM LEFT: High / Low, UV, Moon Phase -->
-                        <div class="absolute bottom-0 left-0 ml-3 flex gap-6">
+                        <div class="absolute bottom-0 left-0 ml-1 flex gap-6">
 
                             <!-- Forthcoming High / Low  -->
                             <div>
@@ -89,7 +89,7 @@
 
                             <!-- Moon Phase - Open Meteo or BOM & nighttime (x-cloak here hides the arrows on load) -->
 
-                            <div x-cloak x-show="$store.config.size!=='small' && showMoon" class="flex items-end gap-0.5" style="padding-bottom: 20px;">
+                            <div x-cloak x-show="$store.config.size!=='small' && showMoon" class="flex items-end gap-0.5" style="padding-bottom: 15px;">
                                 <img class="inline-block align-bottom" :src="moonPhaseIcon" :alt="moonPhase" :height="$store.config.moonIconSize" :width="$store.config.moonIconSize"/>
 
                                 <!-- Waxing indicator -->
@@ -98,7 +98,7 @@
                                 </div>
 
                                 <!-- Waning indicator -->
-                                <div x-show="isWaxing" class="inline-flex items-end" :style="`width: ${$store.config.moonIconSize / 3}px; height: ${$store.config.moonIconSize / 3}px;`">
+                                <div x-show="isWaning" class="inline-flex items-end" :style="`width: ${$store.config.moonIconSize / 3}px; height: ${$store.config.moonIconSize / 3}px;`">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full fill-blue-300" viewBox="7 10 10 5"><path d="M7 10l5 5 5-5z"></path></svg>
                                 </div>
                             </div>
@@ -159,8 +159,8 @@
                                     <defs>
                                         <linearGradient id="finish-line-fade" x1="0" y1="0" x2="420" y2="0" gradientUnits="userSpaceOnUse">
                                             <stop offset="0" stop-color="#000000" stop-opacity="0" />
-                                            <stop offset="0.25" stop-color="#484850" stop-opacity="0.75" />
-                                            <stop offset="1" stop-color="#484850" stop-opacity="0.75" />
+                                            <stop offset="0.25" stop-color="#888890" stop-opacity="0.75" />
+                                            <stop offset="1" stop-color="#888890" stop-opacity="0.75" />
                                         </linearGradient>
                                     </defs>
                                     <rect x="0" y="0" width="420" height="2" rx="1" fill="url(#finish-line-fade)"></rect>
