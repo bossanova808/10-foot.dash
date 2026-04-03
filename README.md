@@ -86,7 +86,7 @@ This project uses, and sends thanks to, these particular giants:
 * [Vite](https://vitejs.dev/) for dev/building/packaging
 * [Alpine.js](https://alpinejs.dev/) for reactivity
 * [Tailwind CSS](https://tailwindcss.com/) for CSS
-* [CodeRabbit](https://www.coderabbit.ai/) - for development assistance
+* Hand coded, but [Claude](https://claude.ai/) and [CodeRabbit](https://www.coderabbit.ai/) are used for development advice/PR reviews  
 * (Either) [OpenMeteo](https://open-meteo.com/) for weather data
 * (Or) [Australian Bureau of Meteorology](http://www.bom.gov.au/) for weather data
 * [ARPANSA](https://www.arpansa.gov.au/) for live UV data (some Australian locations)
