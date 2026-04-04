@@ -64,11 +64,13 @@ window.kodi = () => {
 
     return {
         artwork: null,
+        artworks: [],
         title: '',
         season: '',
         episode: '',
         finishTime: '',
         timeRemainingAsTime: '',
+        premiered: '',
 
         _updateTimeRemainingInterval: null,
         _monitoringKodiPlayback: null,
@@ -77,10 +79,64 @@ window.kodi = () => {
         _connectTimeout: null,
         _currentMediaType: null,
 
+        getArtwork(key) {
+            const foundArtwork = this.artworks.find((artwork) => artwork.key === key);
+            return foundArtwork?.url || null;
+        },
+
+        getFormattedSeasonAndEpisode() {
+            const seasonNumber = Number.parseInt(this.season, 10);
+            const episodeNumber = Number.parseInt(this.episode, 10);
+
+            if (!Number.isFinite(seasonNumber) || !Number.isFinite(episodeNumber) || seasonNumber < 0 || episodeNumber < 0) {
+                return '';
+            }
+
+            return `S${seasonNumber}•E${episodeNumber}`;
+        },
+
+        getFormattedSeason() {
+            const seasonNumber = Number.parseInt(this.season, 10);
+            return Number.isFinite(seasonNumber) && seasonNumber >= 0 ? String(seasonNumber) : '';
+        },
+
+        getFormattedEpisode() {
+            const episodeNumber = Number.parseInt(this.episode, 10);
+            return Number.isFinite(episodeNumber) && episodeNumber >= 0 ? String(episodeNumber) : '';
+        },
+
+        getFormattedPremiered() {
+            if (!this.premiered) {
+                return '';
+            }
+
+            const parts = String(this.premiered).slice(0, 10).split('-');
+            if (parts.length !== 3) {
+                return '';
+            }
+
+            const [year, month] = parts;
+            return `${Number(month)}/${year}`;
+        },
+
         createEnhancedKodiWebSocket() {
 
             const protocols = getKodiProtocols();
             const kodiWebsocketUrl = `${protocols.ws}${Alpine.store('config').kodiJsonUrl}/jsonrpc`;
+
+            const normaliseKodiArtworkUrl = (artworkFromKodi) => {
+                if (!artworkFromKodi) {
+                    return null;
+                }
+
+                let normalisedArtwork = String(artworkFromKodi).replace(/\/$/, '');
+
+                if (normalisedArtwork.startsWith("http")) {
+                    return normalisedArtwork;
+                }
+
+                return `${protocols.http}${Alpine.store('config').kodiWebUrl}/image/${encodeURIComponent(normalisedArtwork)}`;
+            };
 
             const options = {
                 connectionTimeout: 2000,        // Increased slightly for network stability
@@ -189,12 +245,22 @@ window.kodi = () => {
                             this.title = results.item.title || '';
                             this.season = (results.item.season ?? '');
                             this.episode = (results.item.episode ?? '');
+                            this.premiered = (results.item.premiered ?? '');
                             this._currentMediaType = results.item.type;
 
                             let artworkUrl = null;
 
                             if (results.item.art && typeof results.item.art === 'object') {
                                 const art = results.item.art;
+
+                                this.artworks = Object.entries(art)
+                                    .filter(([, value]) => typeof value === 'string' && value.length > 0)
+                                    .map(([key, value]) => ({
+                                        key,
+                                        raw: value,
+                                        url: normaliseKodiArtworkUrl(value),
+                                    }))
+                                    .filter((entry) => entry.url);
 
                                 if (art["album.thumb"]) {
                                     log.info("Artwork: using [album.thumb]")
@@ -227,20 +293,11 @@ window.kodi = () => {
                             }
 
                             if (artworkUrl) {
-                                let artworkFromKodi = artworkUrl;
-                                log.info("Kodi returned:", artworkFromKodi);
-                                artworkFromKodi = artworkFromKodi.replace(/\/$/, '');
-                                let kodiArtworkUrl;
-
-                                if (artworkFromKodi.startsWith("http")) {
-                                    log.info("Artwork URL is absolute - using directly");
-                                    kodiArtworkUrl = artworkFromKodi;
-                                } else {
-                                    const protocols = getKodiProtocols();
-                                    kodiArtworkUrl = `${protocols.http}${Alpine.store('config').kodiWebUrl}/image/${encodeURIComponent(artworkFromKodi)}`;
+                                const kodiArtworkUrl = normaliseKodiArtworkUrl(artworkUrl);
+                                if (kodiArtworkUrl) {
+                                    log.info("Final artwork URL:", kodiArtworkUrl);
+                                    this.artwork = kodiArtworkUrl;
                                 }
-                                log.info("Final artwork URL:", kodiArtworkUrl);
-                                this.artwork = kodiArtworkUrl;
                             }
 
                             // & Kick off the update of time remaining every x milliseconds
@@ -342,6 +399,7 @@ window.kodi = () => {
                                     'season',
                                     'episode',
                                     'endtime',
+                                    'premiered',
                                 ],
                                 playerid: playerId,
                             })
@@ -364,11 +422,13 @@ window.kodi = () => {
         _clearProperties() {
             // log.info("Clearing Kodi properties");
             this.artwork = null;
+            this.artworks = [];
             this.title = '';
             this.season = '';
             this.episode = '';
             this.finishTime = '';
             this.timeRemainingAsTime = '';
+            this.premiered = '';
         },
 
         _handleDisconnectCleanup(options = {}) {
@@ -417,3 +477,33 @@ window.kodi = () => {
         },
     }
 };
+
+
+// {
+//     "id": "Player.GetItem",
+//     "jsonrpc": "2.0",
+//     "result": {
+//         "item": {
+//             "art": {
+//                 "clearlogo": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fLogo%2f0%3fFormat%3doriginal%26Tag%3dd7a1ad466bbf9cbcba384bafa9d826e8/",
+//                 "fanart": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fBackdrop%2f0%3fFormat%3doriginal%26Tag%3df4378d21297161018a134f2248e6d78d/",
+//                 "icon": "image://DefaultVideo.png/",
+//                 "landscape": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fThumb%2f0%3fFormat%3doriginal/",
+//                 "poster": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fPrimary%2f0%3fFormat%3doriginal%26Tag%3dec1d614b8ea1fad81ce11cd3cd02a4d9/",
+//                 "thumb": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2f871553f09f3856b8d4aa75537be26083%2fImages%2fPrimary%2f0%3fFormat%3doriginal%26Tag%3dec111a970e519d7aa3af6d07701c9e58/",
+//                 "tvshow.banner": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fBanner%2f0%3fFormat%3doriginal%26Tag%3d3d832e1ef735bf7c03eee6f5fa172163/",
+//                 "tvshow.clearlogo": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fLogo%2f0%3fFormat%3doriginal%26Tag%3dd7a1ad466bbf9cbcba384bafa9d826e8/",
+//                 "tvshow.fanart": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fBackdrop%2f0%3fFormat%3doriginal%26Tag%3df4378d21297161018a134f2248e6d78d/",
+//                 "tvshow.landscape": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fThumb%2f0%3fFormat%3doriginal/",
+//                 "tvshow.poster": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fPrimary%2f0%3fFormat%3doriginal%26Tag%3dec1d614b8ea1fad81ce11cd3cd02a4d9/",
+//                 "tvshow.thumb": "image://http%3a%2f%2f100.79.172.11%3a8096%2fItems%2fe8ec6af526a793ad1436314fdfe517b7%2fImages%2fPrimary%2f0%3fFormat%3doriginal%26Tag%3dec1d614b8ea1fad81ce11cd3cd02a4d9/"
+//             },
+//             "episode": 2,
+//             "id": 554,
+//             "label": "Jon Richardson & Roisin Conaty, Rob Beckett & Kiell Smith-Bynoe, Lou Wall",
+//             "season": 29,
+//             "title": "Jon Richardson & Roisin Conaty, Rob Beckett & Kiell Smith-Bynoe, Lou Wall",
+//             "type": "episode"
+//         }
+//     }
+// }

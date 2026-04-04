@@ -530,10 +530,10 @@ window.weather = () => {
                     this.observations = json;
                     // Use this to keep track of when we last got observations, in case of network drop etc.
                     this.observationsFetchedAt =  new Date(this.observations.metadata.response_timestamp);
-                    this.currentTemperature = this.observations.data.temp + '°';
+                    this.currentTemperature = Number(this.observations.data.temp).toFixed(1) + '°';
                     if (this.observations.data.temp_feels_like != null) {
-                        this.currentFeelsLike = this.observations.data.temp_feels_like + '°';
-                }
+                        this.currentFeelsLike = Number(this.observations.data.temp_feels_like).toFixed(1) + '°';
+                    }
                     else {
                         this.currentFeelsLike = "";
                     }
@@ -571,8 +571,6 @@ window.weather = () => {
                     }
                     // What is the general outlook?
                     this.outlook = todayForecast.short_text;
-                    // Remove full stop on end
-                    this.outlook = this.outlook.replace(/\.$/, '')
 
                     // Save the icon - we convert the short text and use that to get the icon, if we can
                     // as sometimes the BOM will return an outlook of 'Sunny' but an icon of 'shower' if there is even

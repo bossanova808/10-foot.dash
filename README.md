@@ -86,7 +86,7 @@ This project uses, and sends thanks to, these particular giants:
 * [Vite](https://vitejs.dev/) for dev/building/packaging
 * [Alpine.js](https://alpinejs.dev/) for reactivity
 * [Tailwind CSS](https://tailwindcss.com/) for CSS
-* [CodeRabbit](https://www.coderabbit.ai/) - for development assistance
+* Hand coded, but [Claude](https://claude.ai/) and [CodeRabbit](https://www.coderabbit.ai/) are used for development advice/PR reviews  
 * (Either) [OpenMeteo](https://open-meteo.com/) for weather data
 * (Or) [Australian Bureau of Meteorology](http://www.bom.gov.au/) for weather data
 * [ARPANSA](https://www.arpansa.gov.au/) for live UV data (some Australian locations)
@@ -117,7 +117,17 @@ This is the basic URL to visit:
 
 `https://dash.bossanova808.net/`
 
-Initially, you will simply see a large clock in the center of your screen.  This is the default display if the app is not configured, or the network is down.
+Initially, you will simply see a large clock in the centre of your screen.  This is the default display if the app is not configured, or the network is down.
+
+### * New! * Experimental 'logo' layout available in V4
+
+There is a new experimental layout available with V4 – the weather info is re-arranged, and the media now playing display uses logos, rather than posters (when logos are available).  (N.B. Currently it has only been tested on tablets, using the default `large` size).
+
+You can try it out with: 
+
+`https://dash.bossanova808.net/logo.html` (...adding any parameters on the end as usual, see below).
+
+## Configuring the App
 
 Now, you need to provide some configuration.  All configuration is done via URL parameters.  These follow the URL and an initial `?` character, and take the form of: `parameter=value`, with each separated by `&`, given a URL that looks like this:
 
