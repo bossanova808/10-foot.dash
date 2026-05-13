@@ -625,8 +625,8 @@ window.weather = () => {
                         this.forecastLow = this.forecastHigh;
                         this.forecastHigh = temp;
                     }
-                    this.forecastHigh = (this.forecastHigh + '°').padStart(4, ' ');
-                    this.forecastLow = (this.forecastLow + '°').padStart(4, ' ');
+                    this.forecastHigh = this.forecastHigh + '°';
+                    this.forecastLow = this.forecastLow + '°';
                 })
         },
 
@@ -750,14 +750,14 @@ window.weather = () => {
                 return;
             }
 
-            // Short circuit if it's nighttime
+            // Don't display UV at night but still fetch it, makes development a lot easier...
             if (this.sunrise && this.sunset && (now < this.sunrise || now > this.sunset)) {
-                log.info('Currently nighttime - not bothering with UV data');
-                this.uvNow = "";
-                this.uvIcon = "";
-                this.forecastUVMax = "";
+                // log.info('Currently nighttime - not bothering with UV data');
+                // this.uvNow = "";
+                // this.uvIcon = "";
+                // this.forecastUVMax = "";
                 this.showUV = false;
-                return;
+                //return;
             }
 
             // Get the UV data
@@ -822,18 +822,18 @@ window.weather = () => {
         // See: https://www.npmjs.com/package/lunarphase-js
         async updateMoon(weatherService) {
             const now = new Date();
-
-            // If we're using the BOM, and it's daytime, short circuit - don't set Moon data as UV is displayed instead
-            // However if we're using Open Meteo for weather data, carry on, as there's no UV to show so might as well always show the moon
+            this.showMoon = true;
+            // If we're using the BOM,don't show moon data during the day
+            // However, if we're using Open Meteo for weather data, carry on, as there's no UV to show so might as well always show the moon
             if (weatherService === "bom" && (this.sunrise && this.sunset && now >= this.sunrise && now <= this.sunset)) {
-                log.info('Currently daytime - not showing moon data');
-                this.moonPhase = "";
-                this.moonPhaseEmoji = "";
-                this.moonPhaseIcon = "";
+                // log.info('Currently daytime - not showing moon data');
+                // this.moonPhase = "";
+                // this.moonPhaseEmoji = "";
+                // this.moonPhaseIcon = "";
                 this.showMoon = false;
-                return;
+                //return;
             }
-            // // The Moon Phases are well known and a fixed set, so no fallback required
+            // // The Moon Phases are well-known and a fixed set, so no fallback is required
             // Phases are listed here: https://www.npmjs.com/package/lunarphase-js#usage
             let hemisphere = Hemisphere.SOUTHERN;
             if (Alpine.store('config').moon.toLowerCase() ==='n'){
@@ -845,7 +845,6 @@ window.weather = () => {
             this.isWaning = Moon.isWaning(now);
             this.moonPhaseIcon = Alpine.store('config').svgAnimatedPath  + mapMoonPhaseToWeatherIcon[this.moonPhase];
             log.info(`Current moon (${hemisphere}) is ${this.moonPhase} ${this.moonPhaseEmoji}, icon: ${this.moonPhaseIcon}, isWaxing: ${this.isWaxing}, isWaning: ${this.isWaning}`);
-            this.showMoon = true;
         },
 
         // CORS errors with this one...

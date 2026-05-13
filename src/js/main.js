@@ -77,7 +77,7 @@ Alpine.store('config', {
             this.textSmall = 'text-5xl';
             this.textSmaller = 'text-4xl';
             this.weatherIconSize = 200;
-            this.moonIconSize = 50;
+            this.moonIconSize = 80;
             this.kodiArtworkScale = "max-w-sm"
         }
         // 'medium' = Smaller tablets, ~7" screens - FF: Responsive, 920x570, DPR 2, Zoom to 67%
@@ -89,7 +89,7 @@ Alpine.store('config', {
             this.textSmall = 'text-5xl';
             this.textSmaller = 'text-4xl';
             this.weatherIconSize = 275;
-            this.moonIconSize = 50;
+            this.moonIconSize = 80;
             this.kodiArtworkScale = "max-w-md"
         }
         // 'large' = Default, 8 inch or bigger tablets - FF: Responsive, 960x580, DPR 1, Zoom to 80%
