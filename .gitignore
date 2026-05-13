@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Meteocons icons (copied from @meteocons/svg at build time)
+public/images/meteocons/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

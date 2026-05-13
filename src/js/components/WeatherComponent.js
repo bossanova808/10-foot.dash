@@ -625,8 +625,8 @@ window.weather = () => {
                         this.forecastLow = this.forecastHigh;
                         this.forecastHigh = temp;
                     }
-                    this.forecastHigh = this.forecastHigh + '°';
-                    this.forecastLow = this.forecastLow + '°';
+                    this.forecastHigh = (this.forecastHigh + '°').padStart(4, ' ');
+                    this.forecastLow = (this.forecastLow + '°').padStart(4, ' ');
                 })
         },
 

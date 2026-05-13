@@ -139,7 +139,7 @@ Alpine.store('config', {
     moonIconSize: null,
     kodiArtworkScale: null,
     iconMarginCorrection: null,
-    svgAnimatedPath: "images/weather-icons/svg/",
+    svgAnimatedPath: "images/meteocons/",
 });
 
 // These control the conditional visibility of the Weather and Kodi components
