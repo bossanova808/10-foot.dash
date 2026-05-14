@@ -735,19 +735,20 @@ window.weather = () => {
             const uvURL = `https://uvdata.arpansa.gov.au/xml/uvvalues.xml`;
             const stationRaw = Alpine.store('config').uvStation;
             let station = (stationRaw ?? "").toLowerCase();
+            this.showUV = true;
 
             // If the BOM is set to Ascot Vale, auto-set UV too, significantly aids testing!
             if (!station.length && Alpine.store('config').bom === 'r1r11df'){
                 station = "Melbourne"
             }
 
-            // Short circuit if no station configured
+            // Don't show UV if no station condfigured
             if (!station.length) {
                 log.info("No UV station configured — skipping UV fetch");
                 this.uvNow = "";
                 this.uvIcon = "";
                 this.showUV = false;
-                return;
+                //return;
             }
 
             // Don't display UV at night but still fetch it, makes development a lot easier...
@@ -800,7 +801,6 @@ window.weather = () => {
                         let iconCode = (uvValue < 11) ? this.uvNow : 11;
                         this.uvIcon = Alpine.store('config').svgAnimatedPath + `uv-index-${iconCode}.svg`;
                         log.info(`UV now: ${this.uvNow}, forecast max: ${this.forecastUVMax}, icon: ${this.uvIcon}`);
-                        this.showUV = true;
                     }
                     else {
                         console.warn(`Could not find valid UV data for station: ${station}`);
