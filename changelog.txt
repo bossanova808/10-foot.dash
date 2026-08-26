@@ -1,0 +1,79 @@
+2026-06-02
+- Layout tweaks to better handle longer short weather texts
+
+2026-05-13
+- Update meteocons to V3, improve high/low spacing
+
+2026-04-04
+- Final layout tweaks for V4 release
+- Finesse logo layout, add to README
+- Fix build errors, remove legacy Vite config
+
+2026-03-29
+- Improve moon display
+- Visual tweaks - faded HR above time remaining countdown, SxxExx colouring
+- Hide occasional feels-like icon flash
+
+2026-03-28
+- Prep for V4 release
+
+2026-02-14 to 2026-01-19
+- NPM/dependency updates
+
+2025-11-16
+- Add Jellyfin pause timeout to handle backgrounded apps, improve polling fallback logic
+- Add configuration for Moon Phase hemisphere
+
+2025-11-11
+- Add Adelaide deploy support
+
+2025-11-09
+- Update project name and README to reflect broader focus (no longer Kodi-only)
+- Hide API key from logs by using auth headers instead
+- Add filtering by device name
+
+2025-11-06
+- Add Jellyfin "Now Playing" support as an alternative to Kodi
+- Improve logging with component tagging & colours
+
+2025-10-28
+- NPM dependency updates
+
+2025-10-01 to 2025-10-02
+- Add moon phase display (day/night swap with UV, waxing/waning indicator)
+- Move alternative weather source (Open Meteo) into the main weather component
+
+2025-09-28 to 2025-09-30
+- Add UV support
+- Improve High/Low display with inline SVGs, protect against XSS
+- Improve rain display, tidy up weather-not-available display
+
+2025-09-23 to 2025-09-25
+- Improve WebSocket/Kodi component reliability and logging
+- Add support for (rare) Kodi SSL scenario
+
+2025-09-02
+- New server
+
+2025-07-16
+- Update to Vite 7, use auth by default
+
+2025-01-20 to 2025-01-24
+- Move to using Vite 6 & Tailwind 4
+- Add finish time per request
+
+2024-12-04 to 2024-12-08
+- Add support for weather data from OpenMeteo (no longer Australia-specific)
+- Is now a PWA
+
+2024-04-08 to 2024-04-15
+- Change WebSocket library to PartySocket
+- Fix time remaining display > 1 hour in Kodi PVR playback
+- Improve logging
+
+2023-11-26 to 2023-11-28
+- Move to free hosting, update deploy scripts
+- Add pre-caching of all weather icons for quicker loads/swaps
+
+2023-03-27
+- Initial commit
