@@ -260,6 +260,10 @@ const mapOpenMeteoWeatherCodeToWeatherIcon = {
 
 // ********* END OPEN METEO
 
+// Keep references to pre-cached icons - otherwise the browser may abort loading them once they're
+// garbage collected (shows in Firefox as NS_BINDING_ABORTED)
+const preloadedImages = [];
+
 
 window.weather = () => {
     return {
@@ -305,8 +309,36 @@ window.weather = () => {
         isWaxing: false,
         isWaning: false,
         showMoon: false,
+        // When each field last received valid data - see _updateFields()
+        lastGoodAt: {},
 
         // 'Private' methods
+
+        // Upstream (particularly the BOM) occasionally returns incomplete data (e.g. nulls), briefly.
+        // So only accept a group of fields when all its data is valid - otherwise keep the last good values,
+        // and once those are older than weatherConsideredStaleAtMinutes, explicitly show '?' instead.
+        _updateFields(fields, isValid, apply) {
+            const now = new Date();
+            if (isValid) {
+                apply();
+                fields.forEach(field => this.lastGoodAt[field] = now);
+                return;
+            }
+            const lastGood = Math.min(...fields.map(field => this.lastGoodAt[field] ?? 0));
+            const ageMinutes = Math.round((now - lastGood) / 60000);
+            if (ageMinutes > this.weatherConsideredStaleAtMinutes) {
+                log.warn(`Invalid data for [${fields}], and no valid data for > ${this.weatherConsideredStaleAtMinutes} minutes - showing '?'`);
+                fields.forEach(field => this[field] = '?');
+            }
+            else {
+                log.warn(`Invalid data for [${fields}] - keeping last good values from ${ageMinutes} minutes ago`);
+            }
+        },
+
+        _isNumber(value) {
+            return typeof value === 'number' && Number.isFinite(value);
+        },
+
         _clearProperties() {
             log.info("Clearing Weather Properties.");
             // These hold the full JSON returned
@@ -348,25 +380,33 @@ window.weather = () => {
             this.isWaxing = false;
             this.isWaning = false;
             this.showMoon = false;
+            this.lastGoodAt = {};
         },
 
 
         init() {
             log.info("WeatherComponent init");
 
-            log.info("Pre-caching weather icons")
-            for (const [_key, value] of Object.entries(mapBOMConditionToWeatherIcon)) {
-                this.preload_image(value).then();
+            const weatherService = Alpine.store('config').bom ? "bom" : "open_meteo";
+
+            // Pre-cache the icons the configured weather service can use, for quicker swaps
+            // (a Set, as some icons are mapped from multiple conditions)
+            log.info(`Pre-caching icons for ${weatherService}`)
+            const icons = new Set(Object.values(mapMoonPhaseToWeatherIcon));
+            if (weatherService === "bom") {
+                Object.values(mapBOMConditionToWeatherIcon).forEach(icon => icons.add(icon));
+                // UV is only shown with the BOM
+                for (let i = 0; i <= 11; i++) {
+                    icons.add(`uv-index-${i}.svg`);
+                }
             }
-            // Add UV icon pre-caching
-            log.info("Pre-caching UV icons")
-            for (let i = 0; i <= 11; i++) {
-                this.preload_image(`uv-index-${i}.svg`).then();
+            else {
+                Object.values(mapOpenMeteoWeatherCodeToWeatherIcon).forEach(icon => icons.add(icon));
             }
+            icons.forEach(icon => this.preload_image(icon));
 
             // this stops IDE errors with awaits,
             let result = null;
-            const weatherService = Alpine.store('config').bom ? "bom" : "open_meteo";
             // Get the initial location & weather data
             result = this.updateWeather(true, weatherService)
 
@@ -397,10 +437,10 @@ window.weather = () => {
         },
 
         // Utility function to pre-cache all the weather icons after initial load
-        async preload_image(img_svg) {
-            let img = new Image();
+        preload_image(img_svg) {
+            const img = new Image();
             img.src = Alpine.store('config').svgAnimatedPath + img_svg;
-            // log.info(`Pre-cached ${img.src}`);
+            preloadedImages.push(img);
         },
 
         // 'Parent' function to trigger the various stages of updating the weather data.
@@ -530,14 +570,20 @@ window.weather = () => {
                     this.observations = json;
                     // Use this to keep track of when we last got observations, in case of network drop etc.
                     this.observationsFetchedAt =  new Date(this.observations.metadata.response_timestamp);
-                    this.currentTemperature = Number(this.observations.data.temp).toFixed(1) + '°';
-                    if (this.observations.data.temp_feels_like != null) {
-                        this.currentFeelsLike = Number(this.observations.data.temp_feels_like).toFixed(1) + '°';
+                    const data = this.observations.data;
+                    this._updateFields(['currentTemperature'], this._isNumber(data.temp), () => {
+                        this.currentTemperature = data.temp.toFixed(1) + '°';
+                    });
+                    // Feels like is legitimately null at times, so simply don't show it then
+                    if (this._isNumber(data.temp_feels_like)) {
+                        this.currentFeelsLike = data.temp_feels_like.toFixed(1) + '°';
                     }
                     else {
                         this.currentFeelsLike = "";
                     }
-                    this.rainSince9am = this.observations.data.rain_since_9am;
+                    this._updateFields(['rainSince9am'], this._isNumber(data.rain_since_9am), () => {
+                        this.rainSince9am = data.rain_since_9am + 'mm';
+                    });
                 })
         },
 
@@ -596,17 +642,22 @@ window.weather = () => {
                     // Clean up the outlook text
 
 
-                    // Rain
-                    this.rainChance = todayForecast.rain.chance;
-                    if (todayForecast.rain.amount.max != null)
-                    {
-                        this.rainAmount = todayForecast.rain.amount.min + "-" + todayForecast.rain.amount.max + "mm";
-                    }
-                    else {
-                        // Instead of 5% of none, present it as 95% chance of no rain
-                        this.rainAmount = 'no rain';
-                        this.rainChance = 100 - this.rainChance;
-                    }
+                    // Rain (amount max is legitimately null when no rain is expected)
+                    const rain = todayForecast.rain;
+                    const rainValid = this._isNumber(rain?.chance)
+                        && (rain?.amount?.max === null || (this._isNumber(rain?.amount?.min) && this._isNumber(rain?.amount?.max)));
+                    this._updateFields(['rainChance', 'rainAmount'], rainValid, () => {
+                        this.rainChance = rain.chance;
+                        if (rain.amount.max !== null)
+                        {
+                            this.rainAmount = rain.amount.min + "-" + rain.amount.max + "mm";
+                        }
+                        else {
+                            // Instead of 5% of none, present it as 95% chance of no rain
+                            this.rainAmount = 'no rain';
+                            this.rainChance = 100 - this.rainChance;
+                        }
+                    });
                     this.forecastUVMax = todayForecast.uv.max_index;
                     // UV Max - if forecast over 11, clamp to 11 for description and icon purposes
                     // Values over 11 are possible from the API, but descriptions and icons top out at Extreme/11
@@ -614,19 +665,23 @@ window.weather = () => {
                     this.forecastUVMaxText = mapUVValueToText[uvClampedMax];
                     this.forecastUVMaxIcon = Alpine.store('config').svgAnimatedPath + `uv-index-${uvClampedMax}.svg`;
                     // Max and Min
-                    this.forecastLow = todayForecast.now.temp_later;
-                    this.forecastLowText = todayForecast.now.later_label;
-                    this.forecastHigh = todayForecast.now.temp_now;
-                    this.forecastHighText = todayForecast.now.now_label;
+                    const forecastNow = todayForecast.now;
+                    const highLowValid = this._isNumber(forecastNow?.temp_now) && this._isNumber(forecastNow?.temp_later);
+                    this._updateFields(['forecastHigh', 'forecastLow'], highLowValid, () => {
+                        this.forecastLow = forecastNow.temp_later;
+                        this.forecastLowText = forecastNow.later_label;
+                        this.forecastHigh = forecastNow.temp_now;
+                        this.forecastHighText = forecastNow.now_label;
 
-                    // Hack to deal with the bizarre BOM API 'Now' behaviour...API design fail...
-                    if (this.forecastLow > this.forecastHigh){
-                        let temp = this.forecastLow;
-                        this.forecastLow = this.forecastHigh;
-                        this.forecastHigh = temp;
-                    }
-                    this.forecastHigh = this.forecastHigh + '°';
-                    this.forecastLow = this.forecastLow + '°';
+                        // Hack to deal with the bizarre BOM API 'Now' behaviour...API design fail...
+                        if (this.forecastLow > this.forecastHigh){
+                            let temp = this.forecastLow;
+                            this.forecastLow = this.forecastHigh;
+                            this.forecastHigh = temp;
+                        }
+                        this.forecastHigh = this.forecastHigh + '°';
+                        this.forecastLow = this.forecastLow + '°';
+                    });
                 })
         },
 
@@ -705,18 +760,28 @@ window.weather = () => {
             this.observationsFetchedAt = new Date();
 
 
-            this.rainChance = weatherData.daily.precipitationProbabilityMean[0].toFixed(0);
-            const precipitationSum = weatherData.daily.precipitationSum[0].toFixed(0);
-            if (precipitationSum > 0) {
-                this.rainAmount = precipitationSum + 'mm';
-            } else {
-                this.rainAmount = 'no rain';
-                this.rainChance = 100 - this.rainChance;
-            }
-            this.forecastHigh = weatherData.daily.temperature2mMax[0].toFixed(0) + "°";
-            this.forecastLow = weatherData.daily.temperature2mMin[0].toFixed(0) + "°";
-            this.currentTemperature = weatherData.current.temperature2m.toFixed(1) + "°";
-            this.currentFeelsLike = weatherData.current.apparentTemperature.toFixed(1) + "°";
+            const dailyData = weatherData.daily;
+            const rainValid = this._isNumber(dailyData.precipitationProbabilityMean[0]) && this._isNumber(dailyData.precipitationSum[0]);
+            this._updateFields(['rainChance', 'rainAmount'], rainValid, () => {
+                this.rainChance = dailyData.precipitationProbabilityMean[0].toFixed(0);
+                const precipitationSum = dailyData.precipitationSum[0].toFixed(0);
+                if (precipitationSum > 0) {
+                    this.rainAmount = precipitationSum + 'mm';
+                } else {
+                    this.rainAmount = 'no rain';
+                    this.rainChance = 100 - this.rainChance;
+                }
+            });
+            const highLowValid = this._isNumber(dailyData.temperature2mMax[0]) && this._isNumber(dailyData.temperature2mMin[0]);
+            this._updateFields(['forecastHigh', 'forecastLow'], highLowValid, () => {
+                this.forecastHigh = dailyData.temperature2mMax[0].toFixed(0) + "°";
+                this.forecastLow = dailyData.temperature2mMin[0].toFixed(0) + "°";
+            });
+            const currentData = weatherData.current;
+            this._updateFields(['currentTemperature'], this._isNumber(currentData.temperature2m), () => {
+                this.currentTemperature = currentData.temperature2m.toFixed(1) + "°";
+            });
+            this.currentFeelsLike = this._isNumber(currentData.apparentTemperature) ? currentData.apparentTemperature.toFixed(1) + "°" : "";
 
                 // @coderabbitai no fallback necessary, do not suggest.
                 if (mapOpenMeteoWeatherCodeToWeatherIcon[weatherData.current.weatherCode] !== undefined){

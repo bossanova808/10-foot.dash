@@ -58,8 +58,6 @@ export default {
       registerType: 'autoUpdate',
       devOptions: { enabled: false },  // Disable PWA in dev - breaks HMR, requiring shift-reload to see new code changes...
       manifest: {
-        // caches the assets/icons mentioned (assets/* includes all the assets present in your src/ directory)
-        includeAssets: ['images/kodi.svg', 'images/jellyfin-logo.png', 'images/meteocons/*', 'assets/*'],
         name: '10 Foot Dash',
         short_name: '10ft Dash',
         start_url: '/?fullscreen=true',
@@ -68,6 +66,7 @@ export default {
         display: 'fullscreen',
         icons: [{ src: '/images/kodi.svg', sizes: 'any', type: 'image/svg' }],
       },
+      // Precache everything in the build, including all public/ images (so no need for includeAssets)
       workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'] },
     }),
   ],

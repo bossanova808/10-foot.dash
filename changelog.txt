@@ -1,3 +1,9 @@
+2026-09-24
+- Gracefully handle incomplete weather data (e.g. BOM glitches returning nulls) - keep last good values, show '?' if no valid data for over an hour
+- Fix icon pre-caching being aborted by the browser (Firefox NS_BINDING_ABORTED)
+- Pre-cache only the icons the configured weather service uses, plus moon phase icons
+- Version 4.2.0
+
 2026-06-02
 - Layout tweaks to better handle longer short weather texts
 
