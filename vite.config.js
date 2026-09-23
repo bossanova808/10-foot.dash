@@ -38,7 +38,7 @@ export default {
     manifest: true,
     // minify: 'terser', // Slower, but trying for older iOS support
     // target: 'es2020', // ensure modern bundle keeps destructuring, etc.
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
         logo: resolve(__dirname, 'logo.html'),
